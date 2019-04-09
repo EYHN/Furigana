@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "Furigana",
+    "description": "Name of the extension."
+  },
+  "contextMenuItemDoConvert": {
+    "message": "Inject furigana",
+    "description": "Name of the context menu item."
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "version": "1.0.1",
+  "description": "Add furigana",
+  "icons": {
+    "38": "icons/icon.svg"
+  },
+  "web_accessible_resources": [
+    "dict/*.dat"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*/*"],
+      "js": ["dist/content.js"]
+    }
+  ],
+  "default_locale": "en",
+  "browser_action": {
+    "default_icon": {
+      "38": "icons/icon.svg"
+    },
+    "default_title": "furigana",
+    "default_popup": "setting/options.html"
+  },
+  "permissions": ["<all_urls>", "storage", "contextMenus"],
+  "background": {
+    "scripts": ["dist/background.js"]
+  },
+  "options_ui": {
+    "page": "setting/options.html",
+    "browser_style": true
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "cneyhn@gmail.com"
+    }
+  }
+}

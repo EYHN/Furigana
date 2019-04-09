@@ -1,0 +1,10 @@
+{
+  "extensionName": {
+    "message": "Furigana",
+    "description": "Name of the extension."
+  },
+  "contextMenuItemDoConvert": {
+    "message": "显示振假名",
+    "description": "Name of the context menu item."
+  }
+}
