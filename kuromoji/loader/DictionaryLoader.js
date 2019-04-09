@@ -19,6 +19,7 @@
 
 var async = require("async");
 var DynamicDictionaries = require("../dict/DynamicDictionaries");
+var urljoin = require('url-join');
 
 /**
  * DictionaryLoader base constructor
@@ -47,7 +48,7 @@ DictionaryLoader.prototype.load = function (load_callback) {
         // Trie
         function (callback) {
             async.map([ "base.dat", "check.dat" ], function (filename, _callback) {
-                loadArrayBuffer(dic_path + '/' + filename, function (err, buffer) {
+                loadArrayBuffer(urljoin(dic_path, filename), function (err, buffer) {
                     if(err) {
                         return _callback(err);
                     }
@@ -67,7 +68,7 @@ DictionaryLoader.prototype.load = function (load_callback) {
         // Token info dictionaries
         function (callback) {
             async.map([ "tid.dat", "tid_pos.dat", "tid_map.dat" ], function (filename, _callback) {
-                loadArrayBuffer(dic_path + '/' + filename, function (err, buffer) {
+                loadArrayBuffer(urljoin(dic_path, filename), function (err, buffer) {
                     if(err) {
                         return _callback(err);
                     }
@@ -87,7 +88,7 @@ DictionaryLoader.prototype.load = function (load_callback) {
         },
         // Connection cost matrix
         function (callback) {
-            loadArrayBuffer(dic_path + '/' + "cc.dat", function (err, buffer) {
+            loadArrayBuffer(urljoin(dic_path, "cc.dat"), function (err, buffer) {
                 if(err) {
                     return callback(err);
                 }
@@ -99,7 +100,7 @@ DictionaryLoader.prototype.load = function (load_callback) {
         // Unknown dictionaries
         function (callback) {
             async.map([ "unk.dat", "unk_pos.dat", "unk_map.dat", "unk_char.dat", "unk_compat.dat", "unk_invoke.dat" ], function (filename, _callback) {
-                loadArrayBuffer(dic_path + '/' + filename, function (err, buffer) {
+                loadArrayBuffer(urljoin(dic_path, filename), function (err, buffer) {
                     if(err) {
                         return _callback(err);
                     }

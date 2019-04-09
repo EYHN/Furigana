@@ -10,6 +10,7 @@
   "dependencies": {
     "kuroshiro": "^1.1.2",
     "kuroshiro-analyzer-kuromoji": "^1.1.0",
+    "url-join": "^4.0.0",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.3.0"
   }
