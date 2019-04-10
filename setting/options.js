@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill";
+
 function saveOptions(e) {
   function onError(error) {
     console.log(`Error: ${error}`);

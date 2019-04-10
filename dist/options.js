@@ -81,122 +81,10 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./content.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./setting/options.js");
 /******/ })
 /************************************************************************/
 /******/ ({
-
-/***/ "./content.js":
-/*!********************!*\
-  !*** ./content.js ***!
-  \********************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var webextension_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! webextension-polyfill */ "./node_modules/webextension-polyfill/dist/browser-polyfill.js");
-/* harmony import */ var webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(webextension_polyfill__WEBPACK_IMPORTED_MODULE_0__);
-
-
-let inited = false;
-
-async function convert(text) {
-  return await webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default.a.runtime.sendMessage({type: 'convert', content: text});
-}
-
-function replace(node, html) {
-  const e = document.createRange().createContextualFragment(html);
-  const newNodes = [];
-  e.childNodes.forEach((node) => newNodes.push(node));
-  node.parentNode.replaceChild(e, node);
-  return newNodes;
-}
-
-function watchChildList(target, cb) {
-  const observer = new MutationObserver(cb);
-  observer.observe(target, {
-    childList: true,
-    subtree: true,
-    characterData: true
-  });
-}
-
-async function detectLanguage() {
-  if (document.documentElement.lang) {
-    return document.documentElement.lang;
-  } else {
-    const detect = await webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default.a.i18n.detectLanguage(document.body.innerText)
-    if (detect.isReliable) {
-      return detect.languages[0].language
-    } else {
-      return null;
-    }
-  }
-}
-
-async function init() {
-  if (inited) return;
-  inited = true;
-  let ignoreNodes = [];
-
-  async function convertAndReplace(node) {
-    if (!node.nodeValue.trim()) return;
-    if (node.parentNode.nodeName === 'RUBY') return;
-    if (!node.nodeValue.match(/[\u3400-\u9FBF]/)) return;
-    const result = await convert(node.nodeValue);
-    ignoreNodes.push(...replace(node, result));
-  }
-  
-  const walk = document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
-  const nodeList = [];
-  while(walk.nextNode()) nodeList.push(walk.currentNode);
-  for (const node of nodeList) {
-    convertAndReplace(node)
-  }
-
-  watchChildList(document.body, async (mutationsList) => {
-    for (const mutation of mutationsList) {
-      if (mutation.type == 'childList') {
-        for (const node of mutation.addedNodes) {
-          if (ignoreNodes.includes(node)) {
-            ignoreNodes.splice(ignoreNodes.indexOf(node), 1);
-            continue;
-          }
-          if (node instanceof Text) {
-            iconvertAndReplace(node)
-          } else {
-            const walk = document.createTreeWalker(node,NodeFilter.SHOW_TEXT,null,false);
-            const nodeList = [];
-            while(walk.nextNode()) nodeList.push(walk.currentNode);
-            for (const node of nodeList) {
-              convertAndReplace(node)
-            }
-          }
-        }
-      }
-    }
-  });
-}
-
-async function autoInit() {
-  if ((await webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default.a.storage.local.get("japanese_website")).japanese_website === false) return;
-  if (await detectLanguage() !== 'ja') return;
-
-  await webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default.a.runtime.sendMessage({type: 'ping'});
-
-  init();
-}
-
-autoInit();
-
-webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default.a.runtime.onMessage.addListener((message) => {
-  if (message.type === 'init') {
-    init();
-  }
-});
-
-/***/ }),
 
 /***/ "./node_modules/webextension-polyfill/dist/browser-polyfill.js":
 /*!*********************************************************************!*\
@@ -1389,7 +1277,50 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 //# sourceMappingURL=browser-polyfill.js.map
 
 
+/***/ }),
+
+/***/ "./setting/options.js":
+/*!****************************!*\
+  !*** ./setting/options.js ***!
+  \****************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var webextension_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! webextension-polyfill */ "./node_modules/webextension-polyfill/dist/browser-polyfill.js");
+/* harmony import */ var webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(webextension_polyfill__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function saveOptions(e) {
+  function onError(error) {
+    console.log(`Error: ${error}`);
+  }
+
+  e.preventDefault();
+  webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default.a.storage.local.set({
+    japanese_website: document.querySelector("#japanese_website").checked
+  }).catch(onError);
+}
+
+function restoreOptions() {
+
+  function setCurrentChoice(result) {
+    document.querySelector("#japanese_website").checked = typeof result.japanese_website === 'undefined' ? true : result.japanese_website;
+  }
+
+  function onError(error) {
+    console.log(`Error: ${error}`);
+  }
+
+  var getting = webextension_polyfill__WEBPACK_IMPORTED_MODULE_0___default.a.storage.local.get("japanese_website");
+  getting.then(setCurrentChoice, onError);
+}
+
+document.addEventListener("DOMContentLoaded", restoreOptions);
+document.querySelector("form").addEventListener("submit", saveOptions);
+
 /***/ })
 
 /******/ });
-//# sourceMappingURL=content.js.map
+//# sourceMappingURL=options.js.map

@@ -1,3 +1,4 @@
+import browser from "webextension-polyfill";
 
 let inited = false;
 

@@ -1,5 +1,6 @@
 import Kuroshiro from "kuroshiro";
 import KuromojiAnalyzer from "kuroshiro-analyzer-kuromoji";
+import browser from "webextension-polyfill";
 
 const initListeners = [];
 
